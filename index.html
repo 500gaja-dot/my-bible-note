@@ -1,0 +1,179 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
+<meta name="theme-color" content="#23395d" />
+<meta name="apple-mobile-web-app-capable" content="yes" />
+<meta name="apple-mobile-web-app-status-bar-style" content="default" />
+<meta name="apple-mobile-web-app-title" content="성경메모" />
+<title>나의 성경 메모</title>
+<link rel="manifest" href="manifest.json" />
+<link rel="apple-touch-icon" href="icon-192.png" />
+<style>
+:root{--bg:#f5f1e8;--paper:#fffdf7;--ink:#1f2937;--muted:#6b7280;--line:#ddd5c5;--accent:#23395d;--accent2:#9b6b3f;--note:#fff8d9;--danger:#a33a3a;--ok:#2f6b4f}
+*{box-sizing:border-box}html,body{height:100%}body{margin:0;font-family:system-ui,-apple-system,"Noto Sans KR",sans-serif;background:var(--bg);color:var(--ink)}
+button,input,select,textarea{font:inherit}button{cursor:pointer}.app{min-height:100dvh;display:grid;grid-template-rows:auto 1fr}
+header{background:var(--accent);color:white;padding:14px 18px;display:flex;gap:12px;align-items:center;justify-content:space-between;box-shadow:0 2px 8px #0002}header h1{font-size:20px;margin:0}.sub{font-size:12px;opacity:.84}
+.actions{display:flex;gap:8px;flex-wrap:wrap}.btn{border:0;border-radius:10px;padding:9px 12px;background:white;color:var(--accent);font-weight:750}.btn.secondary{background:#ffffff18;color:white;border:1px solid #ffffff55}.btn.primary{background:var(--accent);color:white}.btn:disabled{opacity:.5;cursor:not-allowed}
+main{display:grid;grid-template-columns:minmax(0,1.55fr) minmax(330px,.9fr);min-height:0}.reader{padding:18px;overflow:auto}.memo{border-left:1px solid var(--line);background:#f8f5ee;padding:18px;overflow:auto}
+.toolbar{position:sticky;top:0;z-index:8;background:linear-gradient(var(--bg) 84%,transparent);padding-bottom:12px;display:grid;grid-template-columns:minmax(150px,1fr) 108px 108px auto;gap:8px}.quickSearch{display:grid;grid-template-columns:1fr auto;gap:8px;margin-bottom:10px}
+select,input[type=search],input[type=text]{width:100%;border:1px solid var(--line);border-radius:10px;padding:10px;background:white;color:var(--ink)}.chapterTitle{display:flex;align-items:end;justify-content:space-between;gap:12px;margin:8px 0 12px}.chapterTitle h2{margin:0}.status{font-size:12px;color:var(--muted);text-align:right}.status.ok{color:var(--ok);font-weight:700}.status.warn{color:#9a5d1b;font-weight:700}
+.chapterNav{display:flex;justify-content:space-between;gap:8px;margin:8px 0 14px}.chapterNav button{border:1px solid var(--line);background:white;border-radius:10px;padding:8px 12px;color:var(--accent);font-weight:700}
+.verse{background:var(--paper);border:1px solid var(--line);border-radius:14px;padding:14px;margin:9px 0;line-height:1.7;display:grid;grid-template-columns:42px 1fr auto;gap:10px;align-items:start}.verse.active{outline:3px solid #d8b88a;scroll-margin-top:170px}.verseBody{min-width:0}.textWrap{position:relative;border-radius:8px;padding:3px 5px}.drawCanvas{position:absolute;inset:0;width:100%;height:100%;z-index:3;touch-action:none;pointer-events:none}.drawCanvas.on{pointer-events:auto;cursor:crosshair}.verseTools{display:flex;gap:6px;align-items:center;flex-wrap:wrap}.colorDot{width:28px;height:28px;border-radius:50%;border:2px solid #fff;box-shadow:0 0 0 1px #aaa;padding:0}.previewNotes{margin-top:8px;display:grid;gap:6px}.previewNote{background:#fff8d9;border-left:4px solid #d2b75b;border-radius:8px;padding:8px 10px;font-size:13px;line-height:1.45;white-space:pre-wrap}.previewMeta{font-size:11px;color:#76673c;margin-bottom:3px}.vnum{font-weight:800;color:var(--accent2);font-size:18px}.vtext{font-size:18px}.memoBadge{border:0;border-radius:999px;padding:7px 10px;background:#ece7dd;color:var(--accent);white-space:nowrap}.memoBadge.has{background:#f0d98d;font-weight:800}
+.panelTitle{margin:0 0 6px;font-size:20px}.ref{color:var(--accent2);font-weight:800;margin-bottom:14px}.empty{color:var(--muted);padding:20px 0}.selectedVerseText{background:white;border:1px solid var(--line);border-radius:10px;padding:10px 12px;line-height:1.55;margin-bottom:12px;font-size:14px}
+textarea{width:100%;min-height:130px;border:1px solid var(--line);border-radius:12px;padding:12px;resize:vertical;background:white}.save{border:0;border-radius:10px;padding:10px 14px;background:var(--accent);color:white;font-weight:800;margin-top:8px}.noteCard{background:var(--note);border:1px solid #e9d899;border-radius:12px;padding:12px;margin:10px 0}.noteMeta{display:flex;justify-content:space-between;gap:10px;color:#76673c;font-size:12px;margin-bottom:8px}.noteText{white-space:pre-wrap;line-height:1.55}.noteBtns{display:flex;gap:6px;margin-top:10px}.mini{border:1px solid #cdbf91;background:white;border-radius:8px;padding:6px 9px}.mini.delete{color:var(--danger)}
+.searchBox{margin:14px 0 8px}.searchResult{background:white;border:1px solid var(--line);border-radius:10px;padding:10px;margin:7px 0}.searchResult button{border:0;background:none;color:var(--accent);font-weight:800;padding:0}.copyright{font-size:11px;color:var(--muted);margin-top:18px;line-height:1.55}
+.modal{position:fixed;inset:0;background:#0008;display:none;place-items:center;padding:18px;z-index:50}.modal.show{display:grid}.modalBox{width:min(720px,100%);max-height:88dvh;overflow:auto;background:white;border-radius:16px;padding:20px}.modalBox h3{margin-top:0}.fileRow{display:flex;gap:8px;flex-wrap:wrap;margin:12px 0}.help{background:#f4f1ea;border-radius:12px;padding:12px;line-height:1.6;font-size:14px}.installBox{background:#eef4ff;border:1px solid #c8d9f1;border-radius:12px;padding:12px;margin:12px 0;line-height:1.55;font-size:14px}.progress{height:9px;background:#e8e3da;border-radius:99px;overflow:hidden;margin-top:8px}.progress>div{height:100%;width:0;background:var(--accent);transition:width .25s}
+.toast{position:fixed;left:50%;bottom:24px;transform:translateX(-50%);background:#1f2937;color:white;padding:10px 14px;border-radius:10px;z-index:100;display:none;box-shadow:0 6px 20px #0004}.toast.show{display:block}
+@media(max-width:900px){main{grid-template-columns:1fr}.memo{border-left:0;border-top:1px solid var(--line);min-height:45dvh}.toolbar{grid-template-columns:1fr 90px 90px}.toolbar .go{grid-column:1/-1}.vtext{font-size:17px}.verse{grid-template-columns:34px 1fr}.verseTools{grid-column:2}.memoBadge{justify-self:start}}
+@media(max-width:560px){header{align-items:flex-start;flex-direction:column}.actions{width:100%}.toolbar{grid-template-columns:1fr 78px 78px}.reader,.memo{padding:12px}.vtext{font-size:16px}.verse{padding:11px}.chapterTitle{align-items:flex-start;flex-direction:column}.status{text-align:left}}
+@media(max-width:640px){
+  body{padding-bottom:68px}
+  header{position:sticky;top:0;z-index:20;padding:10px 12px}
+  header h1{font-size:18px}.sub{font-size:11px}.actions{display:none}
+  main{display:block}.reader,.memo{padding:10px}.memo{min-height:auto;border-top:1px solid var(--line)}
+  .quickSearch{position:sticky;top:62px;z-index:15;background:var(--bg);padding:8px 0 6px;margin:0}
+  .toolbar{position:sticky;top:118px;z-index:14;grid-template-columns:1.25fr .8fr .8fr;padding:6px 0 10px;background:var(--bg)}
+  .toolbar .go{grid-column:1/-1;min-height:44px}.btn,select,input[type=search],input[type=text]{min-height:44px}
+  .chapterTitle{margin-top:6px}.chapterNav{position:sticky;top:222px;z-index:12;background:var(--bg);padding:4px 0 8px}
+  .chapterNav button{min-height:42px;flex:1}
+  .verse{grid-template-columns:30px 1fr;padding:12px 10px;margin:8px 0;border-radius:12px}.vnum{font-size:17px}.vtext{font-size:17px;line-height:1.8}
+  .verseTools{grid-column:2}.memoBadge{min-height:38px}.colorDot{width:32px;height:32px}
+  .previewNote{font-size:14px;padding:9px 10px}
+  .panelTitle{font-size:19px}.selectedVerseText{font-size:15px}.noteCard{padding:11px}.noteText{font-size:15px}
+  textarea{min-height:120px;font-size:16px}.save{width:100%;min-height:46px}
+  .mobileNav{display:grid}
+  .toast{bottom:78px;max-width:88vw;text-align:center}
+}
+@media(min-width:641px){.mobileNav{display:none}}
+.mobileNav{position:fixed;left:0;right:0;bottom:0;z-index:60;grid-template-columns:repeat(4,1fr);background:#fff;border-top:1px solid var(--line);padding-bottom:env(safe-area-inset-bottom);box-shadow:0 -3px 14px #0002}
+.mobileNav button{border:0;background:#fff;color:var(--accent);padding:8px 2px 7px;font-weight:750;font-size:12px;min-height:58px}
+.mobileNav button span{display:block;font-size:20px;line-height:1.1;margin-bottom:2px}
+@media(display-mode:standalone){header{padding-top:max(14px,env(safe-area-inset-top))}}
+
+.quickNoteModal{position:fixed;inset:0;background:#0009;display:none;align-items:flex-end;justify-content:center;z-index:120;padding:12px}.quickNoteModal.show{display:flex}.quickNoteBox{width:min(680px,100%);background:#fff;border-radius:18px 18px 12px 12px;padding:16px;box-shadow:0 -10px 35px #0004;max-height:88dvh;overflow:auto}.quickNoteHead{display:flex;justify-content:space-between;gap:10px;align-items:center;margin-bottom:8px}.quickNoteRef{font-weight:900;color:var(--accent);font-size:18px}.quickNoteClose{border:0;background:#eee8dc;border-radius:999px;width:38px;height:38px;font-size:22px}.quickVerseText{background:#f8f5ee;border:1px solid var(--line);border-radius:10px;padding:10px 12px;line-height:1.6;margin-bottom:10px}.quickNoteActions{display:grid;grid-template-columns:1fr 1.5fr;gap:8px;margin-top:8px}.quickNoteActions button{min-height:46px;border-radius:10px;font-weight:800}.quickCancel{border:1px solid var(--line);background:white;color:var(--ink)}.quickSave{border:0;background:var(--accent);color:white}.quickHint{font-size:12px;color:var(--muted);margin-top:7px}@media(max-width:640px){.quickNoteModal{padding:0;align-items:flex-end}.quickNoteBox{border-radius:20px 20px 0 0;padding:16px 14px calc(16px + env(safe-area-inset-bottom));max-height:82dvh}.quickNoteBox textarea{min-height:150px;font-size:17px}.quickNoteRef{font-size:19px}}
+</style>
+</head>
+<body>
+<div class="app">
+<header><div><h1>나의 성경 메모</h1><div class="sub">개역한글 1961 · 절별 메모 · 형광펜 · 필기 · 오프라인</div></div><div class="actions"><button class="btn secondary" id="allNotesBtn">내 메모</button><button class="btn secondary" id="installBtn" hidden>앱 설치</button><button class="btn" id="dataBtn">설정·백업</button></div></header>
+<main>
+<section class="reader">
+<div class="quickSearch"><input id="directSearch" type="search" placeholder="예: 시편 150:1 / 느헤미야 2장 4절" /><button class="btn primary" id="directGo">찾기</button></div>
+<div class="toolbar"><select id="book" aria-label="성경책"></select><select id="chapter" aria-label="장"></select><select id="verse" aria-label="절"></select><button class="btn primary go" id="goBtn">해당 절로 이동</button></div>
+<div class="chapterTitle"><h2 id="title"></h2><div class="status" id="dataState">성경 데이터를 준비하는 중...</div></div>
+<div class="chapterNav"><button id="prevChapter">← 이전 장</button><button id="nextChapter">다음 장 →</button></div>
+<div id="verses"><div class="empty">성경 본문을 불러오는 중입니다.</div></div>
+</section>
+<aside class="memo">
+<h3 class="panelTitle">말씀 메모</h3><div class="ref" id="selectedRef">구절을 선택하세요</div><div id="selectedVerseText" class="selectedVerseText" hidden></div>
+<div id="noteList" class="empty">선택한 성경구절에 저장된 메모가 없습니다.</div>
+<div id="editor" style="display:none"><textarea id="noteInput" placeholder="이 말씀을 통해 받은 은혜, 설교 내용, 기도제목, 적용할 내용을 기록하세요."></textarea><button class="save" id="saveNote">+ 메모 추가</button></div>
+<div class="searchBox"><input type="search" id="noteSearch" placeholder="내 메모 검색" /></div><div id="searchResults"></div>
+<div class="copyright">성경 본문: 『성경전서 개역한글판』(1961), 대한성서공회. 본문은 동일성을 유지하여 사용합니다. 개인 메모와 필기 데이터는 사용 중인 기기에 저장됩니다.</div>
+</aside>
+</main>
+</div>
+<nav class="mobileNav" aria-label="모바일 빠른 메뉴">
+<button id="mobileReader"><span>📖</span>본문</button>
+<button id="mobileMemo"><span>📝</span>메모</button>
+<button id="mobileSearch"><span>🔎</span>검색</button>
+<button id="mobileSettings"><span>⚙️</span>설정</button>
+</nav>
+<div class="modal" id="modal"><div class="modalBox"><button class="mini" id="closeModal" style="float:right">닫기</button><h3>설정 · 백업 · 설치</h3>
+<div class="help"><b>성경 데이터</b><br>첫 실행 시 개역한글 1961 전체 66권 데이터를 온라인에서 1회 내려받아 이 기기의 IndexedDB에 저장합니다. 저장 후에는 인터넷 없이도 본문을 읽을 수 있습니다.<div class="progress"><div id="progressBar"></div></div><div id="loadStatus" style="margin-top:6px;color:var(--muted)"></div></div>
+<div class="fileRow"><button class="btn primary" id="downloadBible">66권 데이터 다시 받기</button><label class="btn">성경 JSON 직접 가져오기<input id="bibleFile" type="file" accept=".json,application/json" hidden></label></div>
+<div class="fileRow"><button class="btn" id="exportNotes">메모·필기 백업</button><label class="btn">메모·필기 복원<input id="notesFile" type="file" accept=".json,application/json" hidden></label></div>
+<div class="installBox"><b>갤럭시 홈 화면 설치</b><br><span id="installHelp">HTTPS 주소에서 연 뒤 갤럭시 Chrome 또는 삼성 인터넷의 ‘홈 화면에 추가/앱 설치’를 사용하면 일반 앱처럼 실행할 수 있습니다.</span></div>
+<div style="margin-top:14px"><button class="mini delete" id="clearNotes">모든 메모 삭제</button> <button class="mini delete" id="clearMarks">모든 펜·색상 삭제</button> <button class="mini delete" id="clearBible">오프라인 성경 데이터 삭제</button></div>
+</div></div>
+
+<div class="quickNoteModal" id="quickNoteModal" role="dialog" aria-modal="true" aria-labelledby="quickNoteRef">
+  <div class="quickNoteBox">
+    <div class="quickNoteHead"><div class="quickNoteRef" id="quickNoteRef">말씀 메모</div><button class="quickNoteClose" id="quickNoteClose" aria-label="닫기">×</button></div>
+    <div class="quickVerseText" id="quickVerseText"></div>
+    <textarea id="quickNoteInput" placeholder="이 말씀에 바로 메모하세요. 설교 내용, 묵상, 적용, 기도제목 등을 기록할 수 있습니다."></textarea>
+    <div class="quickHint" id="quickNoteHint">저장하면 이 성경구절 아래에 바로 표시됩니다.</div>
+    <div class="quickNoteActions"><button class="quickCancel" id="quickNoteCancel">취소</button><button class="quickSave" id="quickNoteSave">메모 저장</button></div>
+  </div>
+</div>
+<div class="toast" id="toast"></div>
+<script>
+'use strict';
+const DATA_URL='https://raw.githubusercontent.com/bluesaurel/Korean-Bible-1961-KRV/main/bible_1961_krv.json';
+const BOOKS=['창세기','출애굽기','레위기','민수기','신명기','여호수아','사사기','룻기','사무엘상','사무엘하','열왕기상','열왕기하','역대상','역대하','에스라','느헤미야','에스더','욥기','시편','잠언','전도서','아가','이사야','예레미야','예레미야애가','에스겔','다니엘','호세아','요엘','아모스','오바댜','요나','미가','나훔','하박국','스바냐','학개','스가랴','말라기','마태복음','마가복음','누가복음','요한복음','사도행전','로마서','고린도전서','고린도후서','갈라디아서','에베소서','빌립보서','골로새서','데살로니가전서','데살로니가후서','디모데전서','디모데후서','디도서','빌레몬서','히브리서','야고보서','베드로전서','베드로후서','요한1서','요한2서','요한3서','유다서','요한계시록'];
+const CHAPTERS=[50,40,27,36,34,24,21,4,31,24,22,25,29,36,10,13,10,42,150,31,12,8,66,52,5,48,12,14,3,9,1,4,7,3,3,3,2,14,4,28,16,24,21,28,16,16,13,6,6,4,4,5,3,6,4,3,1,13,5,5,3,5,1,1,1,22];
+const ALIASES={창:'창세기',출:'출애굽기',레:'레위기',민:'민수기',신:'신명기',수:'여호수아',삿:'사사기',룻:'룻기',삼상:'사무엘상',삼하:'사무엘하',왕상:'열왕기상',왕하:'열왕기하',대상:'역대상',대하:'역대하',스:'에스라',느:'느헤미야',에:'에스더',욥:'욥기',시:'시편',잠:'잠언',전:'전도서',아:'아가',사:'이사야',렘:'예레미야',애:'예레미야애가',겔:'에스겔',단:'다니엘',호:'호세아',욜:'요엘',암:'아모스',옵:'오바댜',욘:'요나',미:'미가',나:'나훔',합:'하박국',습:'스바냐',학:'학개',슥:'스가랴',말:'말라기',마:'마태복음',막:'마가복음',눅:'누가복음',요:'요한복음',행:'사도행전',롬:'로마서',고전:'고린도전서',고후:'고린도후서',갈:'갈라디아서',엡:'에베소서',빌:'빌립보서',골:'골로새서',살전:'데살로니가전서',살후:'데살로니가후서',딤전:'디모데전서',딤후:'디모데후서',딛:'디도서',몬:'빌레몬서',히:'히브리서',약:'야고보서',벧전:'베드로전서',벧후:'베드로후서',요일:'요한1서',요이:'요한2서',요삼:'요한3서',유:'유다서',계:'요한계시록'};
+const SAMPLE={'시편':{'150':['할렐루야 그 성소에서 하나님을 찬양하며 그 권능의 궁창에서 그를 찬양할찌어다','그의 능하신 행동을 인하여 찬양하며 그의 지극히 광대하심을 좇아 찬양할찌어다','나팔 소리로 찬양하며 비파와 수금으로 찬양할찌어다','소고 치며 춤추어 찬양하며 현악과 퉁소로 찬양할찌어다','큰 소리 나는 제금으로 찬양하며 높은 소리 나는 제금으로 찬양할찌어다','호흡이 있는 자마다 여호와를 찬양할찌어다 할렐루야']}};
+const $=id=>document.getElementById(id);let bible=SAMPLE,notes=loadLS('bibleNotes',{}),annotations=loadLS('bibleAnnotations',{}),selected=null,deferredPrompt=null;
+function loadLS(k,f){try{return JSON.parse(localStorage.getItem(k))??f}catch{return f}}function saveNotes(){localStorage.setItem('bibleNotes',JSON.stringify(notes))}function saveAnnotations(){try{localStorage.setItem('bibleAnnotations',JSON.stringify(annotations))}catch(e){toast('필기 저장공간이 부족합니다. 백업 후 오래된 필기를 정리해 주세요.')}}function key(b,c,v){return `${b}|${c}|${v}`}
+function toast(msg){const t=$('toast');t.textContent=msg;t.classList.add('show');clearTimeout(t._tm);t._tm=setTimeout(()=>t.classList.remove('show'),2600)}
+function openDB(){return new Promise((res,rej)=>{const r=indexedDB.open('BibleMemoDB',1);r.onupgradeneeded=()=>{if(!r.result.objectStoreNames.contains('data'))r.result.createObjectStore('data')};r.onsuccess=()=>res(r.result);r.onerror=()=>rej(r.error)})}
+async function idbGet(k){const db=await openDB();return new Promise((res,rej)=>{const tx=db.transaction('data','readonly'),r=tx.objectStore('data').get(k);r.onsuccess=()=>res(r.result);r.onerror=()=>rej(r.error)})}
+async function idbSet(k,v){const db=await openDB();return new Promise((res,rej)=>{const tx=db.transaction('data','readwrite');tx.objectStore('data').put(v,k);tx.oncomplete=()=>res();tx.onerror=()=>rej(tx.error)})}
+async function idbDel(k){const db=await openDB();return new Promise((res,rej)=>{const tx=db.transaction('data','readwrite');tx.objectStore('data').delete(k);tx.oncomplete=()=>res();tx.onerror=()=>rej(tx.error)})}
+function normalizeBible(data){const out={};
+  if(Array.isArray(data)){
+    if(data.length&&data[0]&&Array.isArray(data[0].chapters)){for(const bk of data){const b=bk.koreanTitle||bk.korean||bk.name_ko||bk.bookName||bk.name;if(!BOOKS.includes(b))continue;out[b]=normalizeChapters(bk.chapters)}return clean(out)}
+    for(const r of data){const bi=Number(r.book??r.bookid??r.book_id),b=r.koreanTitle||r.book_name||r.bookName||(bi>=1&&bi<=66?BOOKS[bi-1]:null),c=String(r.chapter??r.ch),v=Number(r.verse??r.v),t=r.text??r.hangulText??r.verse_text;if(!BOOKS.includes(b)||!c||!v||typeof t!=='string')continue;out[b]??={};out[b][c]??=[];out[b][c][v-1]=t}return clean(out)
+  }
+  if(!data||typeof data!=='object')throw Error('JSON 형식을 확인할 수 없습니다.');
+  const possibleBooks=Array.isArray(data.books)?data.books:(Array.isArray(data.bible)?data.bible:null);
+  if(possibleBooks){for(const bk of possibleBooks){const b=bk.koreanTitle||bk.korean||bk.name_ko||bk.bookName||bk.name||BOOKS[(bk.id||bk.book)-1];if(!BOOKS.includes(b))continue;out[b]=normalizeChapters(bk.chapters||bk.chapter||[])}return clean(out)}
+  for(const [bk,bv] of Object.entries(data)){let b=BOOKS.includes(bk)?bk:null;if(!b&&bv&&typeof bv==='object')b=bv.koreanTitle||bv.name_ko||bv.korean_name||bv.book_name_ko||null;if(!BOOKS.includes(b))continue;out[b]=normalizeChapters(bv.chapters||bv)}
+  if(!Object.keys(out).length)throw Error('지원하는 성경 JSON 구조를 찾지 못했습니다.');return clean(out)
+}
+function normalizeChapters(chs){const o={};if(Array.isArray(chs)){chs.forEach((ch,i)=>{const c=String(ch?.chapter||ch?.number||i+1);o[c]=normalizeVerses(ch?.verses||ch||[])});return o}for(const [c,vs] of Object.entries(chs||{})){if(/^\d+$/.test(String(c)))o[String(c)]=normalizeVerses(vs)}return o}
+function normalizeVerses(vs){if(Array.isArray(vs))return vs.map(x=>typeof x==='string'?x:(x?.text||x?.hangulText||x?.verse_text||''));const a=[];for(const [v,x] of Object.entries(vs||{})){if(/^\d+$/.test(v))a[+v-1]=typeof x==='string'?x:(x?.text||x?.hangulText||'')}return a}
+function clean(o){for(const b in o)for(const c in o[b])o[b][c]=(o[b][c]||[]).map(x=>x||'');return o}
+function getVerses(b,c){const x=bible?.[b]?.[String(c)]||bible?.[b]?.[c];return Array.isArray(x)?x:[]}
+function bibleStats(){let books=0,chs=0,vs=0;for(const b of BOOKS){if(!bible[b])continue;books++;for(const arr of Object.values(bible[b])){chs++;vs+=arr.length}}return {books,chs,vs}}
+BOOKS.forEach(b=>$('book').add(new Option(b,b)));$('book').value='시편';
+function fillChapters(preferred){const i=BOOKS.indexOf($('book').value),n=CHAPTERS[i],s=$('chapter'),prev=preferred||s.value;s.innerHTML='';for(let c=1;c<=n;c++)s.add(new Option(c+'장',c));s.value=(prev&&+prev<=n)?String(prev):'1';fillVerses()}
+function fillVerses(preferred){const vs=getVerses($('book').value,$('chapter').value),s=$('verse'),prev=preferred||s.value;s.innerHTML='';const count=vs.length||guessVerseCount($('book').value,+$('chapter').value);if(!count){s.add(new Option('절',''));s.disabled=true;return}s.disabled=false;for(let v=1;v<=count;v++)s.add(new Option(v+'절',v));s.value=(prev&&+prev<=count)?String(prev):'1'}
+function guessVerseCount(){return 0}
+function clearSelection(){selected=null;$('selectedRef').textContent='구절을 선택하세요';$('selectedVerseText').hidden=true;$('editor').style.display='none';$('noteInput').value='';$('noteList').className='empty';$('noteList').innerHTML='선택한 성경구절에 저장된 메모가 없습니다.'}
+function render(){const b=$('book').value,c=$('chapter').value,vs=getVerses(b,c),box=$('verses');$('title').textContent=`${b} ${c}장`;box.innerHTML='';$('prevChapter').disabled=(BOOKS.indexOf(b)===0&&+c===1);$('nextChapter').disabled=(BOOKS.indexOf(b)===65&&+c===CHAPTERS[65]);
+  if(!vs.length){box.innerHTML='<div class="empty">이 장의 본문을 아직 불러오지 못했습니다. 인터넷 연결 후 「설정·백업 → 66권 데이터 다시 받기」를 실행하세요.</div>';return}
+  vs.forEach((t,i)=>{const v=i+1,k=key(b,c,v),arr=notes[k]||[],a=annotations[k]||{},d=document.createElement('div');d.className='verse'+(selected?.k===k?' active':'');d.dataset.verse=v;const bg=a.highlight||'transparent';d.innerHTML=`<div class="vnum">${v}</div><div class="verseBody"><div class="textWrap" style="background:${bg}"><span class="vtext"></span><canvas class="drawCanvas"></canvas></div><div class="previewNotes"></div></div><div class="verseTools"><button class="memoBadge ${arr.length?'has':''}">메모 ${arr.length?arr.length:'+'}</button><button class="mini drawBtn">✏ 펜</button><button class="colorDot" data-c="#fff2a8" title="노랑 형광펜" style="background:#fff2a8"></button><button class="colorDot" data-c="#dff2d8" title="초록 형광펜" style="background:#dff2d8"></button><button class="colorDot" data-c="#dcecff" title="파랑 형광펜" style="background:#dcecff"></button><button class="mini clearMark">표시 지우기</button></div>`;d.querySelector('.vtext').textContent=t;d.querySelector('.memoBadge').onclick=e=>{e.stopPropagation();openQuickNote(b,c,v,t)};d.querySelector('.textWrap').onclick=e=>{if(e.target.tagName!=='CANVAS')openQuickNote(b,c,v,t)};
+    const pv=d.querySelector('.previewNotes');arr.forEach(n=>{const nd=document.createElement('div');nd.className='previewNote';nd.innerHTML=`<div class="previewMeta">${escapeHtml(n.created||'')}</div><div></div>`;nd.lastElementChild.textContent=n.text;pv.appendChild(nd)});
+    d.querySelectorAll('.colorDot').forEach(btn=>btn.onclick=e=>{e.stopPropagation();annotations[k]??={};annotations[k].highlight=btn.dataset.c;saveAnnotations();render()});d.querySelector('.clearMark').onclick=e=>{e.stopPropagation();if(annotations[k]){delete annotations[k];saveAnnotations();render()}};box.appendChild(d);setupDrawing(d.querySelector('.drawCanvas'),k,d.querySelector('.drawBtn'))
+  })
+}
+function setupDrawing(canvas,k,btn){const wrap=canvas.parentElement;let drawing=false,last=null;function fit(){const r=wrap.getBoundingClientRect(),dpr=Math.max(1,window.devicePixelRatio||1);canvas.width=Math.max(1,Math.round(r.width*dpr));canvas.height=Math.max(1,Math.round(r.height*dpr));const ctx=canvas.getContext('2d');ctx.setTransform(dpr,0,0,dpr,0,0);if(annotations[k]?.drawing){const img=new Image();img.onload=()=>ctx.drawImage(img,0,0,r.width,r.height);img.src=annotations[k].drawing}}requestAnimationFrame(fit);btn.onclick=e=>{e.stopPropagation();canvas.classList.toggle('on');btn.textContent=canvas.classList.contains('on')?'✓ 펜 저장':'✏ 펜';if(canvas.classList.contains('on'))fit()};function pos(e){const r=canvas.getBoundingClientRect();return{x:e.clientX-r.left,y:e.clientY-r.top}}canvas.onpointerdown=e=>{if(!canvas.classList.contains('on'))return;drawing=true;last=pos(e);canvas.setPointerCapture(e.pointerId)};canvas.onpointermove=e=>{if(!drawing)return;const p=pos(e),ctx=canvas.getContext('2d');ctx.strokeStyle='#c62828';ctx.lineWidth=2.7;ctx.lineCap='round';ctx.lineJoin='round';ctx.beginPath();ctx.moveTo(last.x,last.y);ctx.lineTo(p.x,p.y);ctx.stroke();last=p};canvas.onpointerup=()=>{if(!drawing)return;drawing=false;annotations[k]??={};annotations[k].drawing=canvas.toDataURL('image/png');saveAnnotations()}}
+let quickTarget=null;
+function openQuickNote(b,c,v,t){quickTarget={b,c:String(c),v:String(v),t,k:key(b,c,v)};selected={...quickTarget};$('quickNoteRef').textContent=`${b} ${c}:${v} 메모`;$('quickVerseText').textContent=t;const count=(notes[quickTarget.k]||[]).length;$('quickNoteHint').textContent=count?`기존 메모 ${count}개가 있습니다. 새 메모를 추가하면 본문 아래에 바로 표시됩니다.`:'저장하면 이 성경구절 아래에 바로 표시됩니다.';$('quickNoteInput').value='';$('quickNoteModal').classList.add('show');renderNotes();render();setTimeout(()=>$('quickNoteInput').focus(),120)}
+function closeQuickNote(){$('quickNoteModal').classList.remove('show');$('quickNoteInput').blur();quickTarget=null}
+$('quickNoteClose').onclick=closeQuickNote;$('quickNoteCancel').onclick=closeQuickNote;$('quickNoteModal').onclick=e=>{if(e.target===$('quickNoteModal'))closeQuickNote()};
+$('quickNoteSave').onclick=()=>{const text=$('quickNoteInput').value.trim();if(!quickTarget||!text){toast('메모 내용을 입력해 주세요.');return}(notes[quickTarget.k]??=[]).push({text,created:now()});saveNotes();const k=quickTarget.k;closeQuickNote();renderNotes();render();searchNotes();requestAnimationFrame(()=>document.querySelector(`.verse[data-verse="${k.split('|')[2]}"]`)?.scrollIntoView({behavior:'smooth',block:'center'}));toast('메모를 저장했습니다.')};
+$('quickNoteInput').addEventListener('keydown',e=>{if((e.ctrlKey||e.metaKey)&&e.key==='Enter'){$('quickNoteSave').click()}});
+function selectVerse(b,c,v,t){selected={b,c:String(c),v:String(v),t,k:key(b,c,v)};$('selectedRef').textContent=`${b} ${c}:${v}`;$('selectedVerseText').hidden=false;$('selectedVerseText').textContent=t;$('editor').style.display='block';renderNotes();render()}
+function renderNotes(){if(!selected){clearSelection();return}const arr=notes[selected.k]||[],list=$('noteList');list.innerHTML='';list.className='';if(!arr.length)list.innerHTML='<div class="empty">아직 메모가 없습니다. 아래에 첫 메모를 남겨보세요.</div>';arr.slice().reverse().forEach((n,ri)=>{const idx=arr.length-1-ri,d=document.createElement('div');d.className='noteCard';d.innerHTML=`<div class="noteMeta"><span>${escapeHtml(n.created)}</span><span>${n.updated?'수정 '+escapeHtml(n.updated):''}</span></div><div class="noteText"></div><div class="noteBtns"><button class="mini edit">수정</button><button class="mini delete">삭제</button></div>`;d.querySelector('.noteText').textContent=n.text;d.querySelector('.edit').onclick=()=>editNote(idx);d.querySelector('.delete').onclick=()=>deleteNote(idx);list.appendChild(d)})}
+function now(){return new Intl.DateTimeFormat('ko-KR',{dateStyle:'medium',timeStyle:'short'}).format(new Date())}function escapeHtml(s){return String(s||'').replace(/[&<>'"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[c]))}
+$('saveNote').onclick=()=>{const text=$('noteInput').value.trim();if(!selected||!text)return;(notes[selected.k]??=[]).push({text,created:now()});saveNotes();$('noteInput').value='';renderNotes();render();searchNotes()};function editNote(i){const arr=notes[selected.k],n=prompt('메모 수정',arr[i].text);if(n===null||!n.trim())return;arr[i].text=n.trim();arr[i].updated=now();saveNotes();renderNotes();render();searchNotes()}function deleteNote(i){if(!confirm('이 메모를 삭제할까요?'))return;notes[selected.k].splice(i,1);if(!notes[selected.k].length)delete notes[selected.k];saveNotes();renderNotes();render();searchNotes()}
+function searchNotes(){const q=$('noteSearch').value.trim().toLowerCase(),out=$('searchResults');out.innerHTML='';if(!q)return;Object.entries(notes).forEach(([k,arr])=>arr.forEach(n=>{if((n.text||'').toLowerCase().includes(q)){const [b,c,v]=k.split('|'),d=document.createElement('div');d.className='searchResult';d.innerHTML=`<button>${b} ${c}:${v}</button><div>${escapeHtml(n.text.slice(0,120))}</div>`;d.querySelector('button').onclick=()=>jumpTo(b,c,v);out.appendChild(d)}}));if(!out.children.length)out.innerHTML='<div class="empty">검색 결과가 없습니다.</div>'}
+function jumpTo(b,c,v){$('book').value=b;fillChapters(c);$('chapter').value=String(c);fillVerses(v);$('verse').value=String(v);const t=getVerses(b,c)[+v-1]||'';selectVerse(b,c,v,t);requestAnimationFrame(()=>document.querySelector(`.verse[data-verse="${v}"]`)?.scrollIntoView({behavior:'smooth',block:'center'}))}
+function parseReference(s){let x=String(s||'').trim().replace(/\s+/g,' ');x=x.replace(/(\d+)\s*장\s*(\d+)\s*절?/,'$1:$2').replace(/(\d+)\s*장/,'$1');const m=x.match(/^(.+?)\s*(\d+)\s*[:：]\s*(\d+)$/);if(!m)return null;let b=m[1].trim().replace(/\s/g,''),c=+m[2],v=+m[3];b=ALIASES[b]||BOOKS.find(z=>z.replace(/\s/g,'')===b)||b;if(!BOOKS.includes(b))return null;return{b,c,v}}
+function directGo(){const r=parseReference($('directSearch').value);if(!r){toast('예: 시편 150:1 또는 느헤미야 2장 4절');return}if(r.c<1||r.c>CHAPTERS[BOOKS.indexOf(r.b)]){toast('장 번호를 확인해 주세요.');return}const vs=getVerses(r.b,r.c);if(!vs.length||r.v<1||r.v>vs.length){toast('절 번호를 확인해 주세요.');return}jumpTo(r.b,r.c,r.v)}
+function shiftChapter(delta){let bi=BOOKS.indexOf($('book').value),c=+$('chapter').value+delta;if(c<1){if(bi===0)return;bi--;c=CHAPTERS[bi]}else if(c>CHAPTERS[bi]){if(bi===65)return;bi++;c=1}$('book').value=BOOKS[bi];fillChapters(c);$('chapter').value=String(c);fillVerses();clearSelection();render();document.querySelector('.reader').scrollTo({top:0,behavior:'smooth'})}
+$('book').onchange=()=>{clearSelection();fillChapters(1);render()};$('chapter').onchange=()=>{clearSelection();fillVerses(1);render()};$('verse').onchange=clearSelection;$('goBtn').onclick=()=>{const b=$('book').value,c=$('chapter').value,v=$('verse').value,t=getVerses(b,c)[+v-1]||'';if(t)jumpTo(b,c,v)};$('directGo').onclick=directGo;$('directSearch').addEventListener('keydown',e=>{if(e.key==='Enter')directGo()});$('prevChapter').onclick=()=>shiftChapter(-1);$('nextChapter').onclick=()=>shiftChapter(1);$('noteSearch').oninput=searchNotes;
+$('allNotesBtn').onclick=()=>{$('noteSearch').value='';const out=$('searchResults');out.innerHTML='<h4>전체 메모</h4>';Object.entries(notes).sort().forEach(([k,arr])=>arr.forEach(n=>{const [b,c,v]=k.split('|'),d=document.createElement('div');d.className='searchResult';d.innerHTML=`<button>${b} ${c}:${v}</button><div>${escapeHtml(n.text.slice(0,180))}</div>`;d.querySelector('button').onclick=()=>jumpTo(b,c,v);out.appendChild(d)}));if(out.children.length===1)out.innerHTML+='<div class="empty">저장된 메모가 없습니다.</div>'};
+function setStatus(text,kind=''){$('dataState').textContent=text;$('dataState').className='status '+kind;$('loadStatus').textContent=text}function setProgress(n){$('progressBar').style.width=Math.max(0,Math.min(100,n))+'%'}
+async function loadFullBible(force=false){try{setProgress(8);setStatus('오프라인 성경 데이터를 확인하는 중...');if(!force){const cached=await idbGet('bible1961');if(cached){bible=cached;const st=bibleStats();setProgress(100);setStatus(`${st.books}권 · ${st.chs.toLocaleString()}장 · ${st.vs.toLocaleString()}절 오프라인 저장됨`,'ok');afterBibleReady();return}}
+    setProgress(18);setStatus('개역한글 66권을 내려받는 중...','warn');const res=await fetch(DATA_URL,{cache:'no-cache'});if(!res.ok)throw Error('다운로드 실패 '+res.status);setProgress(58);const raw=await res.json();setStatus('성경 데이터를 정리하고 저장하는 중...','warn');setProgress(72);const normalized=normalizeBible(raw),st0=(()=>{const old=bible;bible=normalized;const s=bibleStats();bible=old;return s})();if(st0.books<66)throw Error(`66권 중 ${st0.books}권만 인식됨`);await idbSet('bible1961',normalized);bible=normalized;setProgress(100);setStatus(`${st0.books}권 · ${st0.chs.toLocaleString()}장 · ${st0.vs.toLocaleString()}절 오프라인 저장 완료`,'ok');afterBibleReady();toast('66권 전체 성경 저장이 완료되었습니다.')
+  }catch(e){console.error(e);setProgress(0);setStatus('전체 성경을 불러오지 못했습니다. 인터넷 연결 후 다시 시도하세요.','warn');bible=SAMPLE;afterBibleReady();toast('전체 성경 다운로드에 실패했습니다.') }}
+function afterBibleReady(){const currentBook=$('book').value||'시편',currentChapter=$('chapter').value||'150';$('book').value=currentBook;fillChapters(currentChapter);if(currentBook==='시편'&&bible['시편']?.['150'])$('chapter').value='150';fillVerses();clearSelection();render()}
+$('dataBtn').onclick=()=>$('modal').classList.add('show');$('closeModal').onclick=()=>$('modal').classList.remove('show');$('modal').onclick=e=>{if(e.target===$('modal'))$('modal').classList.remove('show')};$('downloadBible').onclick=()=>loadFullBible(true);
+$('bibleFile').onchange=async e=>{const f=e.target.files[0];if(!f)return;try{setStatus('가져온 성경 JSON을 정리하는 중...','warn');const n=normalizeBible(JSON.parse(await f.text())),old=bible;bible=n;const st=bibleStats();if(st.books<1)throw Error('성경 데이터를 찾지 못했습니다.');await idbSet('bible1961',n);setStatus(`${st.books}권 · ${st.chs.toLocaleString()}장 · ${st.vs.toLocaleString()}절 저장됨`,'ok');afterBibleReady();toast('성경 데이터를 가져왔습니다.')}catch(err){toast('가져오기 실패: '+err.message)}e.target.value=''};
+function download(name,obj){const blob=new Blob([JSON.stringify(obj,null,2)],{type:'application/json'}),a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=name;a.click();setTimeout(()=>URL.revokeObjectURL(a.href),1000)}$('exportNotes').onclick=()=>download('나의성경메모_백업.json',{version:3,exported:new Date().toISOString(),notes,annotations});$('notesFile').onchange=async e=>{const f=e.target.files[0];if(!f)return;try{const d=JSON.parse(await f.text()),n=d.notes||d;if(!n||typeof n!=='object')throw Error('메모 형식 오류');notes=n;annotations=d.annotations||{};saveNotes();saveAnnotations();renderNotes();render();toast('메모와 표시 데이터를 복원했습니다.')}catch(err){toast('복원 실패: '+err.message)}e.target.value=''};
+$('clearNotes').onclick=()=>{if(confirm('저장된 모든 메모를 삭제할까요? 이 작업은 되돌릴 수 없습니다.')){notes={};saveNotes();clearSelection();render();toast('모든 메모를 삭제했습니다.')}};$('clearMarks').onclick=()=>{if(confirm('모든 형광펜과 펜 표시를 삭제할까요?')){annotations={};saveAnnotations();render();toast('모든 표시를 삭제했습니다.')}};$('clearBible').onclick=async()=>{if(confirm('오프라인에 저장된 66권 성경 데이터를 삭제할까요? 메모는 삭제되지 않습니다.')){await idbDel('bible1961');bible=SAMPLE;setStatus('오프라인 성경 데이터가 삭제되었습니다.','warn');afterBibleReady();toast('성경 데이터가 삭제되었습니다.')}};
+window.addEventListener('beforeinstallprompt',e=>{e.preventDefault();deferredPrompt=e;$('installBtn').hidden=false;$('installHelp').textContent='상단의 「앱 설치」 버튼을 누르면 홈 화면에 설치할 수 있습니다.'});$('installBtn').onclick=async()=>{if(!deferredPrompt)return;deferredPrompt.prompt();await deferredPrompt.userChoice;deferredPrompt=null;$('installBtn').hidden=true};window.addEventListener('appinstalled',()=>toast('홈 화면 설치가 완료되었습니다.'));
+$('mobileReader').onclick=()=>document.querySelector('.reader').scrollIntoView({behavior:'smooth',block:'start'});
+$('mobileMemo').onclick=()=>document.querySelector('.memo').scrollIntoView({behavior:'smooth',block:'start'});
+$('mobileSearch').onclick=()=>{document.querySelector('.reader').scrollIntoView({behavior:'smooth',block:'start'});setTimeout(()=>$('directSearch').focus(),350)};
+$('mobileSettings').onclick=()=>$('modal').classList.add('show');
+if('serviceWorker'in navigator&&location.protocol!=='file:')navigator.serviceWorker.register('./sw.js').catch(console.error);
+fillChapters(150);clearSelection();render();loadFullBible(false);
+</script>
+</body></html>
