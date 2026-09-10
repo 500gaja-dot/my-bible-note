@@ -57,8 +57,7 @@ textarea{width:100%;min-height:130px;border:1px solid var(--line);border-radius:
 </head>
 <body>
 <div class="app">
-<header><div><h1>나의 성경 메모</h1><div class="sub">개역개정 · 절별 메모 · 형광펜 · 필기 · 오프라인</div></div><div class="actions"><button class="btn secondary" id="allNotesBtn">내 메모</button><button class="btn secondary" id="installBtn" hidden>앱 설치</button><button class="btn" id="dataBtn">설정·백업</button></div></header>
-<div style="padding:10px 14px;margin:10px 14px;border:1px solid #d8c7a7;border-radius:10px;background:#fffdf7;font-size:14px"><strong>개역개정 본문 사용 안내</strong><br>이 앱은 <code>bible_krv_revised.json</code> 파일을 불러오도록 설정되어 있습니다. 개역개정 성경 본문은 이 배포 파일에 포함되어 있지 않습니다.</div>
+<header><div><h1>나의 성경 메모</h1><div class="sub">개역한글 1961 · 절별 메모 · 형광펜 · 필기 · 오프라인</div></div><div class="actions"><button class="btn secondary" id="allNotesBtn">내 메모</button><button class="btn secondary" id="installBtn" hidden>앱 설치</button><button class="btn" id="dataBtn">설정·백업</button></div></header>
 <main>
 <section class="reader">
 <div class="quickSearch"><input id="directSearch" type="search" placeholder="예: 시편 150:1 / 느헤미야 2장 4절" /><button class="btn primary" id="directGo">찾기</button></div>
@@ -72,7 +71,7 @@ textarea{width:100%;min-height:130px;border:1px solid var(--line);border-radius:
 <div id="noteList" class="empty">선택한 성경구절에 저장된 메모가 없습니다.</div>
 <div id="editor" style="display:none"><textarea id="noteInput" placeholder="이 말씀을 통해 받은 은혜, 설교 내용, 기도제목, 적용할 내용을 기록하세요."></textarea><button class="save" id="saveNote">+ 메모 추가</button></div>
 <div class="searchBox"><input type="search" id="noteSearch" placeholder="내 메모 검색" /></div><div id="searchResults"></div>
-<div class="copyright">성경 본문: 『성경전서 개역개정판』(1961), 대한성서공회. 본문은 동일성을 유지하여 사용합니다. 개인 메모와 필기 데이터는 사용 중인 기기에 저장됩니다.</div>
+<div class="copyright">성경 본문: 『성경전서 개역한글판』(1961), 대한성서공회. 본문은 동일성을 유지하여 사용합니다. 개인 메모와 필기 데이터는 사용 중인 기기에 저장됩니다.</div>
 </aside>
 </main>
 </div>
@@ -83,7 +82,7 @@ textarea{width:100%;min-height:130px;border:1px solid var(--line);border-radius:
 <button id="mobileSettings"><span>⚙️</span>설정</button>
 </nav>
 <div class="modal" id="modal"><div class="modalBox"><button class="mini" id="closeModal" style="float:right">닫기</button><h3>설정 · 백업 · 설치</h3>
-<div class="help"><b>성경 데이터</b><br>첫 실행 시 개역개정 전체 66권 데이터를 온라인에서 1회 내려받아 이 기기의 IndexedDB에 저장합니다. 저장 후에는 인터넷 없이도 본문을 읽을 수 있습니다.<div class="progress"><div id="progressBar"></div></div><div id="loadStatus" style="margin-top:6px;color:var(--muted)"></div></div>
+<div class="help"><b>성경 데이터</b><br>첫 실행 시 개역한글 1961 전체 66권 데이터를 온라인에서 1회 내려받아 이 기기의 IndexedDB에 저장합니다. 저장 후에는 인터넷 없이도 본문을 읽을 수 있습니다.<div class="progress"><div id="progressBar"></div></div><div id="loadStatus" style="margin-top:6px;color:var(--muted)"></div></div>
 <div class="fileRow"><button class="btn primary" id="downloadBible">66권 데이터 다시 받기</button><label class="btn">성경 JSON 직접 가져오기<input id="bibleFile" type="file" accept=".json,application/json" hidden></label></div>
 <div class="fileRow"><button class="btn" id="exportNotes">메모·필기 백업</button><label class="btn">메모·필기 복원<input id="notesFile" type="file" accept=".json,application/json" hidden></label></div>
 <div class="installBox"><b>갤럭시 홈 화면 설치</b><br><span id="installHelp">HTTPS 주소에서 연 뒤 갤럭시 Chrome 또는 삼성 인터넷의 ‘홈 화면에 추가/앱 설치’를 사용하면 일반 앱처럼 실행할 수 있습니다.</span></div>
@@ -102,12 +101,12 @@ textarea{width:100%;min-height:130px;border:1px solid var(--line);border-radius:
 <div class="toast" id="toast"></div>
 <script>
 'use strict';
-const DATA_URL='./bible_krv_revised.json';
+const DATA_URL='./bible_1961_krv.json';
 const BOOKS=['창세기','출애굽기','레위기','민수기','신명기','여호수아','사사기','룻기','사무엘상','사무엘하','열왕기상','열왕기하','역대상','역대하','에스라','느헤미야','에스더','욥기','시편','잠언','전도서','아가','이사야','예레미야','예레미야애가','에스겔','다니엘','호세아','요엘','아모스','오바댜','요나','미가','나훔','하박국','스바냐','학개','스가랴','말라기','마태복음','마가복음','누가복음','요한복음','사도행전','로마서','고린도전서','고린도후서','갈라디아서','에베소서','빌립보서','골로새서','데살로니가전서','데살로니가후서','디모데전서','디모데후서','디도서','빌레몬서','히브리서','야고보서','베드로전서','베드로후서','요한1서','요한2서','요한3서','유다서','요한계시록'];
 const CHAPTERS=[50,40,27,36,34,24,21,4,31,24,22,25,29,36,10,13,10,42,150,31,12,8,66,52,5,48,12,14,3,9,1,4,7,3,3,3,2,14,4,28,16,24,21,28,16,16,13,6,6,4,4,5,3,6,4,3,1,13,5,5,3,5,1,1,1,22];
 const EN_BOOKS=['Genesis','Exodus','Leviticus','Numbers','Deuteronomy','Joshua','Judges','Ruth','1Samuel','2Samuel','1Kings','2Kings','1Chronicles','2Chronicles','Ezra','Nehemiah','Esther','Job','Psalms','Proverbs','Ecclesiastes','SongOfSongs','Isaiah','Jeremiah','Lamentations','Ezekiel','Daniel','Hosea','Joel','Amos','Obadiah','Jonah','Micah','Nahum','Habakkuk','Zephaniah','Haggai','Zechariah','Malachi','Matthew','Mark','Luke','John','Acts','Romans','1Corinthians','2Corinthians','Galatians','Ephesians','Philippians','Colossians','1Thessalonians','2Thessalonians','1Timothy','2Timothy','Titus','Philemon','Hebrews','James','1Peter','2Peter','1John','2John','3John','Jude','Revelation'];
 const EN_TO_KO=Object.fromEntries(EN_BOOKS.map((n,i)=>[n.toLowerCase().replace(/[^a-z0-9]/g,''),BOOKS[i]]));
-const BIBLE_CACHE_KEY='bible-revised-v15';
+const BIBLE_CACHE_KEY='bible1961-v14';
 const ALIASES={창:'창세기',출:'출애굽기',레:'레위기',민:'민수기',신:'신명기',수:'여호수아',삿:'사사기',룻:'룻기',삼상:'사무엘상',삼하:'사무엘하',왕상:'열왕기상',왕하:'열왕기하',대상:'역대상',대하:'역대하',스:'에스라',느:'느헤미야',에:'에스더',욥:'욥기',시:'시편',잠:'잠언',전:'전도서',아:'아가',사:'이사야',렘:'예레미야',애:'예레미야애가',겔:'에스겔',단:'다니엘',호:'호세아',욜:'요엘',암:'아모스',옵:'오바댜',욘:'요나',미:'미가',나:'나훔',합:'하박국',습:'스바냐',학:'학개',슥:'스가랴',말:'말라기',마:'마태복음',막:'마가복음',눅:'누가복음',요:'요한복음',행:'사도행전',롬:'로마서',고전:'고린도전서',고후:'고린도후서',갈:'갈라디아서',엡:'에베소서',빌:'빌립보서',골:'골로새서',살전:'데살로니가전서',살후:'데살로니가후서',딤전:'디모데전서',딤후:'디모데후서',딛:'디도서',몬:'빌레몬서',히:'히브리서',약:'야고보서',벧전:'베드로전서',벧후:'베드로후서',요일:'요한1서',요이:'요한2서',요삼:'요한3서',유:'유다서',계:'요한계시록'};
 const SAMPLE={'시편':{'150':['할렐루야 그 성소에서 하나님을 찬양하며 그 권능의 궁창에서 그를 찬양할찌어다','그의 능하신 행동을 인하여 찬양하며 그의 지극히 광대하심을 좇아 찬양할찌어다','나팔 소리로 찬양하며 비파와 수금으로 찬양할찌어다','소고 치며 춤추어 찬양하며 현악과 퉁소로 찬양할찌어다','큰 소리 나는 제금으로 찬양하며 높은 소리 나는 제금으로 찬양할찌어다','호흡이 있는 자마다 여호와를 찬양할찌어다 할렐루야']}};
 const $=id=>document.getElementById(id);let bible=SAMPLE,notes=loadLS('bibleNotes',{}),annotations=loadLS('bibleAnnotations',{}),selected=null,deferredPrompt=null;
@@ -204,9 +203,10 @@ function clean(o){for(const b in o)for(const c in o[b])o[b][c]=(o[b][c]||[]).map
 function getVerses(b,c){const x=bible?.[b]?.[String(c)]||bible?.[b]?.[c];return Array.isArray(x)?x:[]}
 function bibleStats(){let books=0,chs=0,vs=0;for(const b of BOOKS){if(!bible[b])continue;books++;for(const arr of Object.values(bible[b])){chs++;vs+=arr.length}}return {books,chs,vs}}
 function verifyBibleAnchors(data){
-  if(!data?.['창세기']?.['1']?.[0]) throw Error('창세기 1:1 데이터가 없습니다');
-  if(!data?.['시편']?.['150']?.[0]) throw Error('시편 150:1 데이터가 없습니다');
-  if(!data?.['요한계시록']?.['22']?.[20]) throw Error('요한계시록 22장 데이터가 없습니다');
+  const g=data?.['창세기']?.['1']?.[0]||'';
+  const c=data?.['역대상']?.['1']?.[0]||'';
+  if(!g.includes('태초')||!g.includes('하나님')) throw Error('창세기 1:1 본문 매핑 오류');
+  if(!c.includes('아담')||!c.includes('셋')||!c.includes('에노스')) throw Error('역대상 1:1 본문 매핑 오류');
   return true;
 }
 BOOKS.forEach(b=>$('book').add(new Option(b,b)));$('book').value='시편';
@@ -246,8 +246,8 @@ async function loadFullBible(force=false){try{
       const cached=await idbGet(BIBLE_CACHE_KEY);
       if(cached){const old=bible;bible=cached;const st=bibleStats();if(st.books===66&&st.chs===1189&&st.vs===31102){setProgress(100);setStatus(`${st.books}권 · ${st.chs.toLocaleString()}장 · ${st.vs.toLocaleString()}절 오프라인 저장됨`,'ok');afterBibleReady();return}bible=old;await idbDel(BIBLE_CACHE_KEY)}
     }
-    setProgress(18);setStatus('개역개정 66권 파일을 읽는 중...','warn');
-    const res=await fetch(DATA_URL+'?v=15',{cache:'no-store'});if(!res.ok)throw Error('성경 파일 읽기 실패 '+res.status);
+    setProgress(18);setStatus('개역한글 66권 파일을 읽는 중...','warn');
+    const res=await fetch(DATA_URL+'?v=14',{cache:'no-store'});if(!res.ok)throw Error('성경 파일 읽기 실패 '+res.status);
     setProgress(58);const raw=await res.json();setStatus('성경 데이터를 정리하고 저장하는 중...','warn');setProgress(72);
     const normalized=normalizeBible(raw),old=bible;bible=normalized;const st0=bibleStats();
     if(st0.books!==66||st0.chs!==1189||st0.vs!==31102){bible=old;throw Error(`성경 구조 인식 오류: ${st0.books}권 / ${st0.chs}장 / ${st0.vs}절`);}
